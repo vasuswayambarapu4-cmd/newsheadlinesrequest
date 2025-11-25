@@ -1,0 +1,31 @@
+#news headlines
+import requests
+from bs4 import BeautifulSoup
+
+# Step 1: Fetch HTML from a public news website
+url = "https://www.bbc.com/news"   # You can replace with any public site
+response = requests.get(url)
+
+# Step 2: Parse HTML using BeautifulSoup
+soup = BeautifulSoup(response.text, "html.parser")
+
+headlines = []
+
+# Extract <h2> tags
+for h2 in soup.find_all("h2"):
+    text = h2.get_text(strip=True)
+    if text:
+        headlines.append(text)
+
+# Extract <title> tag (main page title)
+title_tag = soup.find("title")
+if title_tag:
+    headlines.append(title_tag.get_text(strip=True))
+
+# Step 3: Save the results to a .txt file
+file_name = "news_headlines.txt"
+with open(file_name, "w", encoding="utf-8") as file:
+    for line in headlines:
+        file.write(line + "\n")
+
+print(f"Scraping complete! {len(headlines)} headlines saved to {file_name}")
